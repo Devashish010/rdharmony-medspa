@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RD Harmony Med Spa — Oakville, Ontario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+═══════════════════════════════════════════ */
+:root {
+  --sage:#7a9e7e;--sage-light:#a8c5ab;--sage-deep:#3d6b42;--sage-darker:#2a4d2e;
+  --gold:#c9a96e;--gold-light:#e8d5b0;--gold-dark:#a8833d;
+  --cream:#faf7f2;--ivory:#f0ebe1;--mist:#e8ede9;--white:#ffffff;
+  --char:#151515;--slate:#3a3a3a;--mid:#666;--light:#999;
+  --shadow-sm:0 2px 12px rgba(0,0,0,.06);
+  --shadow-md:0 8px 32px rgba(0,0,0,.1);
+  --shadow-lg:0 24px 64px rgba(0,0,0,.14);
+  --shadow-xl:0 40px 100px rgba(0,0,0,.2);
+  --r:4px;--r-lg:12px;--r-xl:20px;
+  --transition:.3s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--char);overflow-x:hidden;cursor:none}
+body.modal-open{overflow:hidden}
+::selection{background:var(--sage);color:#fff}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{cursor:none;font-family:'Jost',sans-serif;border:none;background:none}
+
+/* ═══ CURSOR ═══ */
+#cursor{position:fixed;width:10px;height:10px;background:var(--sage);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;mix-blend-mode:multiply}
+#cursor-ring{position:fixed;width:32px;height:32px;border:1.5px solid var(--sage);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+body.cursor-hover #cursor{width:18px;height:18px;background:var(--gold)}
+body.cursor-hover #cursor-ring{width:48px;height:48px;border-color:var(--gold)}
+
+/* ═══ NOISE OVERLAY ═══ */
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ═══ LOADER ═══ */
+#loader{position:fixed;inset:0;z-index:100000;background:var(--char);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity .7s ease,visibility .7s}
+#loader.out{opacity:0;visibility:hidden}
+.loader-text{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff;letter-spacing:.12em;opacity:0;animation:fadeIn .8s .3s forwards}
+.loader-sub{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.4);opacity:0;animation:fadeIn .6s .6s forwards}
+.loader-bar{width:180px;height:1px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+.loader-bar::after{content:'';position:absolute;inset:0 auto 0 0;background:var(--sage);animation:barFill 1.6s .5s ease-out forwards;width:0}
+@keyframes barFill{to{width:100%}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ═══ TOAST ═══ */
+#toast-container{position:fixed;bottom:30px;right:30px;z-index:10000;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--char);color:#fff;padding:14px 22px;border-radius:var(--r);font-size:13px;letter-spacing:.03em;box-shadow:var(--shadow-lg);transform:translateX(120%);transition:transform .4s cubic-bezier(.2,.8,.4,1);border-left:3px solid var(--sage);min-width:260px;max-width:340px}
+.toast.show{transform:translateX(0)}
+.toast.error{border-left-color:#e55;background:#1a0a0a}
+.toast.success{border-left-color:var(--sage)}
+
+/* ═══ PROMO BANNER ═══ */
+#promo-banner{position:fixed;top:0;left:0;right:0;z-index:1001;background:var(--sage-deeper,var(--sage-dark,var(--sage-deep)));padding:10px;text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.9)}
+#promo-banner span{color:var(--gold-light);font-weight:500}
+#promo-close{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:none;transition:color .2s}
+#promo-close:hover{color:#fff}
+
+/* ═══ NAV ═══ */
+#nav{position:fixed;top:38px;left:0;right:0;z-index:1000;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;transition:all .4s ease}
+#nav.scrolled{top:0;background:rgba(250,247,242,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(122,158,126,.15);padding:14px 60px;box-shadow:var(--shadow-sm)}
+#nav.hidden-top{top:0}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.1em;color:#fff;transition:color .3s}
+#nav.scrolled .nav-logo{color:var(--sage-deep)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;color:rgba(255,255,255,.82);transition:color .3s;position:relative;padding-bottom:4px}
+#nav.scrolled .nav-links a{color:var(--slate)}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--gold);transition:width .35s ease}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-links a.active{color:var(--gold)}
+#nav.scrolled .nav-links a.active{color:var(--gold-dark)}
+.nav-actions{display:flex;align-items:center;gap:14px}
+.nav-book{background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;padding:9px 26px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:all .3s;cursor:none}
+#nav.scrolled .nav-book{border-color:var(--sage);color:var(--sage)}
+.nav-book:hover{background:var(--sage);color:#fff;border-color:var(--sage)}
+.nav-admin-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:10px;letter-spacing:.15em;text-transform:uppercase;transition:color .3s;cursor:none}
+#nav.scrolled .nav-admin-btn{color:var(--light)}
+.nav-admin-btn:hover{color:var(--gold)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:none;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:24px;height:1.5px;background:#fff;transition:all .3s}
+#nav.scrolled .hamburger span{background:var(--char)}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* Mobile Nav Drawer */
+#nav-drawer{position:fixed;top:0;right:0;bottom:0;width:300px;background:var(--char);z-index:10003;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);padding:80px 40px 40px;display:flex;flex-direction:column}
+#nav-drawer.open{transform:translateX(0)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10002;opacity:0;visibility:hidden;transition:all .3s}
+.drawer-overlay.open{opacity:1;visibility:visible}
+.drawer-links{display:flex;flex-direction:column;gap:4px;flex:1}
+.drawer-links a{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:rgba(255,255,255,.7);padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);transition:color .3s}
+.drawer-links a:hover{color:#fff}
+.drawer-book{margin-top:32px;background:var(--sage);color:#fff;padding:16px;text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;border-radius:var(--r);transition:background .3s}
+.drawer-book:hover{background:var(--sage-deep)}
+
+/* ═══ PAGE SYSTEM ═══ */
+.page{display:none;min-height:100vh;padding-top:0}
+.page.active{display:block}
+
+/* ═══ HERO ═══ */
+.hero{height:100vh;position:relative;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0f1f11 0%,#1e3521 35%,#2d4a30 65%,#1a2e1c 100%)}
+.hero-grid{position:absolute;inset:0;overflow:hidden;perspective:700px}
+.hero-grid::before{content:'';position:absolute;width:220%;height:220%;left:-60%;bottom:-40%;background-image:linear-gradient(to right,rgba(122,158,126,.1) 1px,transparent 1px),linear-gradient(to bottom,rgba(122,158,126,.1) 1px,transparent 1px);background-size:70px 70px;transform:rotateX(60deg);animation:gridScroll 14s linear infinite}
+@keyframes gridScroll{to{transform:rotateX(60deg) translateY(70px)}}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.3;pointer-events:none}
+.orb1{width:550px;height:550px;background:radial-gradient(circle,#4a7550,transparent);top:-120px;right:-100px;animation:orbFloat 9s ease-in-out infinite alternate}
+.orb2{width:380px;height:380px;background:radial-gradient(circle,#c9a96e,transparent);bottom:0;left:-80px;animation:orbFloat 7s ease-in-out infinite alternate;animation-delay:-3s}
+.orb3{width:260px;height:260px;background:radial-gradient(circle,#7a9e7e,transparent);top:38%;left:35%;animation:orbFloat 5s ease-in-out infinite alternate;animation-delay:-5s}
+@keyframes orbFloat{to{transform:translate(25px,-35px) scale(1.08)}}
+.ring-deco{position:absolute;border-radius:50%;border:1px solid rgba(201,169,110,.15);pointer-events:none}
+.ring-deco1{width:480px;height:480px;top:-100px;left:-180px;animation:ringPulse 6s ease-in-out infinite alternate}
+.ring-deco2{width:320px;height:320px;bottom:80px;right:350px;animation:ringPulse 4s ease-in-out infinite alternate;animation-delay:-2s}
+@keyframes ringPulse{to{transform:scale(1.06) rotate(12deg);opacity:.6}}
+.particles-container{position:absolute;inset:0;pointer-events:none}
+.hero-content{position:relative;z-index:5;padding:0 80px;max-width:780px;margin-top:38px}
+.eyebrow{font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);font-weight:300;margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:'';width:36px;height:1px;background:var(--gold)}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(54px,7.5vw,96px);font-weight:300;line-height:1.02;color:#fff;margin-bottom:26px;letter-spacing:-.01em}
+.hero-h1 em{font-style:italic;color:var(--sage-light)}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.58);font-weight:300;line-height:1.85;max-width:460px;margin-bottom:48px;letter-spacing:.02em}
+.hero-ctas{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.btn-primary{background:var(--sage);color:#fff;padding:15px 38px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;border:none;cursor:none;position:relative;overflow:hidden;transition:background .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));display:inline-block}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--sage-deep);transform:translateX(-100%);transition:transform .4s ease}
+.btn-primary:hover::before{transform:translateX(0)}
+.btn-primary span{position:relative;z-index:1}
+.btn-ghost{color:rgba(255,255,255,.72);font-size:11px;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:10px;transition:color .3s;cursor:none}
+.btn-ghost:hover{color:var(--gold)}
+.btn-ghost::before{content:'→';font-size:15px;transition:transform .3s}
+.btn-ghost:hover::before{transform:translateX(4px)}
+.hero-float-card{position:absolute;right:7%;top:50%;transform:translateY(-50%);width:270px;transform-style:preserve-3d;z-index:5;animation:cardBob 5s ease-in-out infinite alternate}
+@keyframes cardBob{0%{transform:translateY(-50%) rotateY(-6deg) rotateX(3deg)}100%{transform:translateY(calc(-50% - 18px)) rotateY(6deg) rotateX(-3deg)}}
+.glass-card{background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(18px);border-radius:var(--r-xl);padding:32px 26px;box-shadow:0 28px 70px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.18)}
+.gc-icon{width:48px;height:48px;margin-bottom:18px;background:linear-gradient(135deg,var(--sage),var(--sage-deep));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 22px rgba(61,107,66,.5)}
+.gc-title{font-family:'Cormorant Garamond',serif;color:#fff;font-size:18px;font-weight:400;margin-bottom:8px}
+.gc-text{color:rgba(255,255,255,.55);font-size:12px;line-height:1.75}
+.gc-stats{display:flex;gap:16px;margin-top:22px}
+.gc-stat{text-align:center}
+.gc-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--gold-light);display:block}
+.gc-label{font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.45);text-transform:uppercase}
+.scroll-indicator{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:9px;letter-spacing:.28em;text-transform:uppercase;animation:scrollBob 2s ease-in-out infinite}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.35))}
+@keyframes scrollBob{0%,100%{opacity:.35;transform:translateX(-50%) translateY(0)}50%{opacity:.65;transform:translateX(-50%) translateY(5px)}}
+
+/* ═══ MARQUEE ═══ */
+.marquee-wrap{background:var(--sage-deep);padding:15px 0;overflow:hidden}
+.marquee-track{display:flex;white-space:nowrap;animation:marqueeAnim 22s linear infinite}
+.marquee-item{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(255,255,255,.65);padding:0 36px;display:flex;align-items:center;gap:36px}
+.marquee-item::after{content:'✦';font-style:normal;font-size:9px;color:var(--gold);flex-shrink:0}
+@keyframes marqueeAnim{to{transform:translateX(-50%)}}
+
+/* ═══ SHARED SECTION STYLES ═══ */
+.section{padding:110px 80px}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-label{font-size:10px;letter-spacing:.38em;text-transform:uppercase;color:var(--sage);font-weight:400;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.section-label::before{content:'';width:28px;height:1px;background:var(--sage)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4.5vw,56px);font-weight:300;line-height:1.08;color:var(--char);letter-spacing:-.01em;margin-bottom:18px}
+.section-title em{font-style:italic;color:var(--sage-deep)}
+.section-desc{font-size:15px;color:var(--mid);font-weight:300;line-height:1.85;max-width:500px}
+
+/* ═══ ABOUT PAGE ═══ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center}
+.about-visual{position:relative;height:560px}
+.about-main-img{position:absolute;inset:0 60px 60px 0;background:linear-gradient(135deg,#1e3521,#4a7550);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-xl);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.about-main-img::before{content:'🌿';font-size:72px;opacity:.25}
+.about-main-img p{color:rgba(255,255,255,.3);font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.about-accent{position:absolute;bottom:0;right:0;width:190px;height:210px;background:var(--ivory);border:8px solid var(--cream);border-radius:var(--r);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.about-accent .num{font-family:'Cormorant Garamond',serif;font-size:54px;font-weight:300;color:var(--sage-deep);line-height:1}
+.about-accent p{font-size:10px;letter-spacing:.15em;color:var(--slate);text-transform:uppercase;text-align:center;line-height:1.6}
+.spin-badge{position:absolute;top:32px;right:32px;background:var(--gold);color:#fff;width:88px;height:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;text-align:center;line-height:1.5;font-weight:500;box-shadow:0 10px 28px rgba(201,169,110,.4);animation:spinBadge 18s linear infinite}
+@keyframes spinBadge{to{transform:rotate(360deg)}}
+.about-text p{font-size:15px;color:#565656;line-height:1.9;font-weight:300;margin-bottom:18px}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:30px 0}
+.feat-chip{background:var(--mist);padding:13px 16px;border-radius:var(--r);border-left:3px solid var(--sage);font-size:12px;letter-spacing:.04em;color:var(--slate);transition:all .25s}
+.feat-chip:hover{background:var(--sage);color:#fff;transform:translateX(3px);border-left-color:var(--sage-deep)}
+
+/* ═══ SERVICES ═══ */
+.services-dark{background:var(--char);position:relative;overflow:hidden}
+.services-dark .section-label{color:var(--sage-light)}
+.services-dark .section-label::before{background:var(--sage-light)}
+.services-dark .section-title{color:#fff}
+.services-dark .section-desc{color:rgba(255,255,255,.45)}
+.services-bg-glow{position:absolute;inset:0;background:radial-gradient(ellipse 90% 60% at 50% 100%,rgba(61,107,66,.18) 0%,transparent 70%);pointer-events:none}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:54px}
+.svc-card{position:relative;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:36px 28px;transition:all .4s ease;cursor:none;overflow:hidden}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--sage),var(--gold));transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.svc-card:hover{transform:translateY(-7px);background:rgba(255,255,255,.065);border-color:rgba(122,158,126,.3);box-shadow:0 28px 56px rgba(0,0,0,.4)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-icon{width:52px;height:52px;border-radius:14px;margin-bottom:24px;background:rgba(122,158,126,.12);border:1px solid rgba(122,158,126,.2);display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .3s}
+.svc-card:hover .svc-icon{background:linear-gradient(135deg,var(--sage),var(--sage-deep));border-color:var(--sage);box-shadow:0 8px 22px rgba(61,107,66,.4)}
+.svc-card h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:12px}
+.svc-card p{font-size:13px;color:rgba(255,255,255,.48);line-height:1.8;font-weight:300}
+.svc-card .svc-price{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-top:18px;display:block}
+.svc-card .svc-price small{font-size:13px;color:rgba(255,255,255,.35);font-family:'Jost',sans-serif}
+.svc-link{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--sage-light);transition:all .3s}
+.svc-link:hover{gap:14px;color:var(--gold)}
+.svc-badge{position:absolute;top:18px;right:18px;background:var(--gold);color:var(--char);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 11px;border-radius:2px;font-weight:500}
+
+/* ═══ INFO STRIP ═══ */
+.info-strip{background:var(--ivory);display:grid;grid-template-columns:repeat(4,1fr)}
+.info-item{padding:54px 36px;border-right:1px solid rgba(0,0,0,.06);position:relative;overflow:hidden;transition:background .3s;cursor:default}
+.info-item:last-child{border-right:none}
+.info-item:hover{background:var(--mist)}
+.info-item::after{content:attr(data-n);position:absolute;top:16px;right:20px;font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:rgba(122,158,126,.07);line-height:1;pointer-events:none}
+.info-icon{font-size:26px;margin-bottom:18px;display:block}
+.info-item h4{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--char);margin-bottom:9px}
+.info-item p{font-size:13px;color:#777;line-height:1.7;font-weight:300}
+
+/* ═══ BOOKING SECTION ═══ */
+.booking-section{background:var(--cream);padding:110px 80px}
+.booking-wrap{max-width:800px;margin:0 auto}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--slate);font-weight:400}
+.form-input,.form-select,.form-textarea{width:100%;padding:13px 16px;border:1px solid rgba(0,0,0,.12);border-radius:var(--r);font-size:14px;font-family:'Jost',sans-serif;font-weight:300;color:var(--char);background:var(--white);transition:border-color .25s,box-shadow .25s;outline:none;appearance:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(122,158,126,.12)}
+.form-input.error,.form-select.error,.form-textarea.error{border-color:#e55;box-shadow:0 0 0 3px rgba(229,85,85,.1)}
+.form-error{font-size:11px;color:#e55;margin-top:4px}
+.form-textarea{resize:vertical;min-height:120px;line-height:1.7}
+.form-select{cursor:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.form-btn{background:var(--sage);color:#fff;padding:16px 48px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;border:none;cursor:none;position:relative;overflow:hidden;transition:background .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));margin-top:10px;display:inline-block}
+.form-btn::before{content:'';position:absolute;inset:0;background:var(--sage-deep);transform:translateX(-100%);transition:transform .4s ease}
+.form-btn:hover::before{transform:translateX(0)}
+.form-btn span{position:relative;z-index:1}
+.form-btn:disabled{opacity:.6;pointer-events:none}
+.form-btn.loading span::after{content:' ...'}
+.time-slots{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.time-slot{padding:9px 18px;border:1px solid rgba(0,0,0,.12);border-radius:var(--r);font-size:12px;letter-spacing:.06em;color:var(--slate);cursor:none;transition:all .2s;background:var(--white)}
+.time-slot:hover{border-color:var(--sage);color:var(--sage)}
+.time-slot.selected{background:var(--sage);color:#fff;border-color:var(--sage)}
+.time-slot.taken{opacity:.35;pointer-events:none;text-decoration:line-through}
+
+/* ═══ TESTIMONIALS PAGE ═══ */
+.reviews-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:52px}
+.rating-card{background:var(--sage-deep);color:#fff;padding:22px 28px;border-radius:var(--r);text-align:center;min-width:160px}
+.rating-big{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1;display:block}
+.rating-stars{color:var(--gold);font-size:16px;margin:4px 0}
+.rating-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.75}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:60px}
+.review-card{background:var(--ivory);padding:32px;border-radius:var(--r);border-bottom:3px solid transparent;transition:all .3s;position:relative;overflow:hidden}
+.review-card:hover{border-bottom-color:var(--sage);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.review-card::before{content:'"';position:absolute;top:16px;right:20px;font-family:'Cormorant Garamond',serif;font-size:80px;color:rgba(122,158,126,.1);line-height:1}
+.review-stars{color:var(--gold);font-size:13px;margin-bottom:14px}
+.review-card p{font-size:14px;color:#565656;line-height:1.8;font-weight:300;font-style:italic;margin-bottom:22px}
+.review-author{display:flex;align-items:center;gap:12px}
+.author-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--sage-deep));display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:500;flex-shrink:0}
+.author-name{font-size:13px;font-weight:500;color:var(--char)}
+.author-tag{font-size:11px;color:var(--light);letter-spacing:.06em}
+.review-form-wrap{background:var(--mist);padding:48px;border-radius:var(--r);margin-top:20px}
+.review-form-wrap h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:8px;color:var(--char)}
+.star-rating-input{display:flex;gap:6px;margin-bottom:4px}
+.star-btn{font-size:26px;color:#ddd;cursor:none;transition:color .2s;background:none;border:none;padding:2px}
+.star-btn.lit,.star-btn:hover{color:var(--gold)}
+
+/* ═══ CONTACT ═══ */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:start}
+.contact-info h3{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:20px;color:var(--char)}
+.contact-info p{font-size:14px;color:var(--mid);line-height:1.8;font-weight:300;margin-bottom:28px}
+.contact-detail{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}
+.cd-icon{width:42px;height:42px;background:var(--mist);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(122,158,126,.2)}
+.cd-text strong{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:3px;font-weight:500}
+.cd-text span{font-size:14px;color:var(--slate);font-weight:300}
+.map-placeholder{margin-top:28px;background:linear-gradient(135deg,#1e3521,#2d4a30);border-radius:var(--r);height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(255,255,255,.4);font-size:13px;letter-spacing:.1em}
+.map-placeholder::before{content:'📍';font-size:32px;opacity:.6}
+
+/* ═══ TREATMENT INFO ═══ */
+.treatment-tabs{display:flex;gap:4px;margin-bottom:40px;background:var(--ivory);padding:6px;border-radius:var(--r);max-width:600px}
+.tab-btn{flex:1;padding:11px 20px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;border-radius:calc(var(--r) - 2px);transition:all .25s;background:none;border:none;color:var(--mid);cursor:none;font-family:'Jost',sans-serif}
+.tab-btn.active{background:var(--sage);color:#fff;box-shadow:var(--shadow-sm)}
+.treatment-content{display:none}
+.treatment-content.active{display:block}
+.treatment-card-lg{background:var(--white);border-radius:var(--r);overflow:hidden;margin-bottom:20px;box-shadow:var(--shadow-sm);border:1px solid rgba(0,0,0,.06)}
+.tc-header{padding:28px 32px;border-bottom:1px solid var(--mist);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.tc-icon-title{display:flex;align-items:center;gap:16px}
+.tc-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--mist),var(--ivory));border:1px solid rgba(122,158,126,.15);display:flex;align-items:center;justify-content:center;font-size:22px}
+.tc-title-wrap h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--char)}
+.tc-title-wrap p{font-size:12px;color:var(--light);letter-spacing:.08em}
+.tc-price-tag{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--sage-deep);text-align:right}
+.tc-price-tag small{font-size:12px;color:var(--light);font-family:'Jost',sans-serif;display:block}
+.tc-body{padding:28px 32px}
+.tc-body p{font-size:14px;color:#565656;line-height:1.85;font-weight:300;margin-bottom:16px}
+.tc-bullets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.tc-bullet{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--slate);font-weight:300}
+.tc-bullet::before{content:'✓';color:var(--sage);font-weight:600;flex-shrink:0}
+.tc-footer{padding:20px 32px;background:var(--mist);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.tc-tag{background:var(--ivory);border:1px solid rgba(122,158,126,.2);padding:5px 14px;border-radius:20px;font-size:11px;color:var(--sage);letter-spacing:.08em}
+.book-this-btn{background:var(--sage);color:#fff;padding:11px 26px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;border:none;cursor:none;border-radius:var(--r);transition:background .3s;font-family:'Jost',sans-serif}
+.book-this-btn:hover{background:var(--sage-deep)}
+
+/* ═══ IV THERAPY ═══ */
+.iv-hero{background:linear-gradient(135deg,var(--char),#1a2e1c);padding:90px 80px;position:relative;overflow:hidden}
+.iv-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 50%,rgba(122,158,126,.12) 0%,transparent 70%)}
+.iv-hero-content{position:relative;z-index:1;max-width:620px}
+.iv-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,64px);font-weight:300;color:#fff;line-height:1.1;margin-bottom:20px}
+.iv-hero h1 em{color:var(--sage-light);font-style:italic}
+.iv-hero p{font-size:15px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.85;margin-bottom:36px;max-width:500px}
+.iv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:54px}
+.iv-card{background:var(--white);border-radius:var(--r);padding:32px 28px;border:1px solid rgba(0,0,0,.06);transition:all .3s;box-shadow:var(--shadow-sm)}
+.iv-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:rgba(122,158,126,.2)}
+.iv-icon{font-size:32px;margin-bottom:16px}
+.iv-card h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--char);margin-bottom:10px}
+.iv-card p{font-size:13px;color:var(--mid);line-height:1.75;font-weight:300}
+.iv-card .iv-price{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--sage-deep);margin-top:16px;display:block}
+
+/* ═══ ADMIN ═══ */
+.admin-wrap{background:var(--char);min-height:100vh;padding:0}
+.admin-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#0e1710;border-right:1px solid rgba(255,255,255,.06);padding:30px 0;display:flex;flex-direction:column;z-index:100}
+.admin-logo{padding:0 28px 28px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:20px}
+.admin-logo h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#fff;letter-spacing:.08em}
+.admin-logo p{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px}
+.admin-nav{flex:1;padding:0 14px}
+.admin-nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--r);color:rgba(255,255,255,.45);font-size:12px;letter-spacing:.1em;cursor:none;transition:all .2s;margin-bottom:2px;border:none;background:none;width:100%;font-family:'Jost',sans-serif;text-align:left}
+.admin-nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.admin-nav-item.active{background:rgba(122,158,126,.12);color:var(--sage-light)}
+.admin-nav-item .nav-icon{font-size:16px;flex-shrink:0}
+.admin-main{margin-left:260px;padding:40px;min-height:100vh;background:#111714}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.admin-header h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#fff}
+.admin-header p{font-size:12px;color:rgba(255,255,255,.35);margin-top:3px;letter-spacing:.05em}
+.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:36px}
+.admin-stat{background:#1a231b;border-radius:var(--r);padding:22px;border:1px solid rgba(255,255,255,.06)}
+.admin-stat .stat-val{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:#fff;line-height:1}
+.admin-stat .stat-lbl{font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-top:4px}
+.admin-stat .stat-change{font-size:12px;color:var(--sage-light);margin-top:8px}
+.admin-table-wrap{background:#1a231b;border-radius:var(--r);border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.admin-table-header{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.admin-table-header h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#fff}
+.admin-search{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:8px 14px;color:#fff;font-size:13px;font-family:'Jost',sans-serif;outline:none;width:200px}
+.admin-search::placeholder{color:rgba(255,255,255,.3)}
+table{width:100%;border-collapse:collapse}
+th{padding:14px 20px;text-align:left;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:400;border-bottom:1px solid rgba(255,255,255,.06)}
+td{padding:14px 20px;font-size:13px;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;letter-spacing:.08em}
+.status-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.status-confirmed{background:rgba(122,158,126,.12);color:var(--sage-light)}
+.status-confirmed::before{background:var(--sage)}
+.status-pending{background:rgba(201,169,110,.1);color:var(--gold)}
+.status-pending::before{background:var(--gold)}
+.status-cancelled{background:rgba(229,85,85,.1);color:#e55}
+.status-cancelled::before{background:#e55}
+.admin-action-btn{background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:5px 12px;border-radius:var(--r);font-size:11px;cursor:none;transition:all .2s;font-family:'Jost',sans-serif}
+.admin-action-btn:hover{border-color:var(--sage);color:var(--sage)}
+.admin-login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--char)}
+.admin-login-box{background:#1a231b;border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);padding:52px;width:100%;max-width:420px}
+.admin-login-box h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#fff;margin-bottom:6px}
+.admin-login-box p{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px}
+.admin-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:13px 16px;color:#fff;font-size:14px;font-family:'Jost',sans-serif;outline:none;transition:border-color .25s;margin-bottom:14px}
+.admin-input:focus{border-color:var(--sage)}
+.admin-login-btn{width:100%;background:var(--sage);color:#fff;padding:14px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:none;border-radius:var(--r);cursor:none;transition:background .3s;font-family:'Jost',sans-serif;margin-top:6px}
+.admin-login-btn:hover{background:var(--sage-deep)}
+
+/* ═══ CTA SECTION ═══ */
+.cta-section{background:var(--sage-deep);padding:110px 80px;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(201,169,110,.1) 0%,transparent 70%)}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5.5vw,72px);font-weight:300;color:#fff;line-height:1.08;margin-bottom:20px;position:relative}
+.cta-title em{font-style:italic;color:var(--gold-light)}
+.cta-sub{font-size:15px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.8;max-width:480px;margin:0 auto 44px}
+.cta-btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-white{background:#fff;color:var(--sage-deep);padding:15px 38px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;transition:all .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));display:inline-block}
+.btn-white:hover{background:var(--gold);color:#fff}
+.btn-outline-white{border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85);padding:15px 38px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;transition:all .3s;display:inline-block}
+.btn-outline-white:hover{background:rgba(255,255,255,.08);border-color:#fff}
+
+/* ═══ FOOTER ═══ */
+footer{background:#0b160d;padding:80px 80px 36px;color:rgba(255,255,255,.45)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.footer-brand h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;margin-bottom:14px;letter-spacing:.06em}
+.footer-brand p{font-size:13px;line-height:1.8;font-weight:300;margin-bottom:22px}
+.footer-socials{display:flex;gap:10px}
+.soc-btn{width:36px;height:36px;border:1px solid rgba(255,255,255,.13);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;text-decoration:none;color:rgba(255,255,255,.4);transition:all .3s;cursor:none}
+.soc-btn:hover{border-color:var(--sage);color:var(--sage);background:rgba(122,158,126,.08)}
+.footer-col h4{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:18px;font-weight:400}
+.footer-col a,.footer-col p{display:block;font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;margin-bottom:9px;line-height:1.7;font-weight:300;transition:color .25s;cursor:none}
+.footer-col a:hover{color:var(--sage-light)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p,.footer-bottom a{font-size:12px;color:rgba(255,255,255,.3)}
+.footer-bottom a:hover{color:var(--sage-light)}
+
+/* ═══ MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s;padding:20px}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal-box{background:var(--white);border-radius:var(--r-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(.97);transition:transform .3s}
+.modal-overlay.open .modal-box{transform:none}
+.modal-header{padding:28px 32px 20px;border-bottom:1px solid var(--mist);display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300}
+.modal-close{background:none;border:none;font-size:22px;color:var(--light);cursor:none;transition:color .2s;line-height:1}
+.modal-close:hover{color:var(--char)}
+.modal-body{padding:28px 32px 32px}
+.modal-success{text-align:center;padding:40px 32px}
+.success-icon{font-size:52px;margin-bottom:16px}
+.modal-success h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:10px}
+.modal-success p{font-size:14px;color:var(--mid);line-height:1.75}
+
+/* ═══ REVEAL ANIMATIONS ═══ */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .75s ease,transform .75s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal-d1{transition-delay:.12s}
+.reveal-d2{transition-delay:.24s}
+.reveal-d3{transition-delay:.36s}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1024px){
+  #nav{padding:16px 28px}#nav.scrolled{padding:12px 28px}
+  .hero-content{padding:0 28px}.hero-float-card{display:none}
+  .section{padding:80px 28px}
+  .about-grid{grid-template-columns:1fr;gap:48px}.about-visual{height:300px}
+  .services-grid{grid-template-columns:1fr 1fr}
+  .info-strip{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .contact-grid{grid-template-columns:1fr}
+  .iv-grid{grid-template-columns:1fr 1fr}
+  .admin-sidebar{width:220px}.admin-main{margin-left:220px}
+  .admin-grid{grid-template-columns:1fr 1fr}
+  .reviews-header{flex-direction:column;gap:20px;align-items:flex-start}
+  .reviews-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+}
+@media(max-width:768px){
+  .nav-links,.nav-actions{display:none}
+  .hamburger{display:flex}
+  .hero-h1{font-size:44px}
+  .services-grid{grid-template-columns:1fr}
+  .info-strip{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .iv-grid{grid-template-columns:1fr}
+  .admin-sidebar{display:none}.admin-main{margin-left:0}
+  .booking-section{padding:60px 24px}
+  .iv-hero{padding:70px 28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOADER ── -->
+<div id="loader">
+  <div class="loader-text">RD Harmony</div>
+  <div class="loader-sub">Med Spa · Oakville, Ontario</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- ── CURSOR ── -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── TOAST CONTAINER ── -->
+<div id="toast-container"></div>
+
+<!-- ── PROMO BANNER ── -->
+<div id="promo-banner">
+  ✦ <span>EID Special</span> — Enjoy 20% OFF any treatment this March &nbsp;·&nbsp; Oakville, GTA ✦
+  <button id="promo-close" onclick="document.getElementById('promo-banner').style.display='none';document.getElementById('nav').style.top='0'">×</button>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#" class="nav-logo" onclick="navigate('home');return false">RD Harmony</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#" onclick="navigate('home');return false" data-page="home">Home</a></li>
+    <li><a href="#" onclick="navigate('about');return false" data-page="about">About</a></li>
+    <li><a href="#" onclick="navigate('services');return false" data-page="services">Services</a></li>
+    <li><a href="#" onclick="navigate('treatments');return false" data-page="treatments">Treatments</a></li>
+    <li><a href="#" onclick="navigate('iv');return false" data-page="iv">IV Therapy</a></li>
+    <li><a href="#" onclick="navigate('testimonials');return false" data-page="testimonials">Testimonials</a></li>
+    <li><a href="#" onclick="navigate('contact');return false" data-page="contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-admin-btn" onclick="navigate('admin')">Admin ↗</button>
+    <button class="nav-book" onclick="navigate('booking')">Book Now</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── MOBILE DRAWER ── -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div id="nav-drawer">
+  <div class="drawer-links">
+    <a href="#" onclick="navigate('home');toggleDrawer()">Home</a>
+    <a href="#" onclick="navigate('about');toggleDrawer()">About</a>
+    <a href="#" onclick="navigate('services');toggleDrawer()">Services</a>
+    <a href="#" onclick="navigate('treatments');toggleDrawer()">Treatments</a>
+    <a href="#" onclick="navigate('iv');toggleDrawer()">IV Therapy</a>
+    <a href="#" onclick="navigate('testimonials');toggleDrawer()">Testimonials</a>
+    <a href="#" onclick="navigate('contact');toggleDrawer()">Contact</a>
+  </div>
+  <a href="#" class="drawer-book" onclick="navigate('booking');toggleDrawer()">Book Now</a>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+      <div class="ring-deco ring-deco1"></div>
+      <div class="ring-deco ring-deco2"></div>
+      <div class="particles-container" id="particles"></div>
+    </div>
+    <div class="hero-content">
+      <div class="eyebrow">Oakville, Ontario · Mobile Med Spa</div>
+      <h1 class="hero-h1">Relax.<br/><em>Rejuvenate.</em><br/>Unwind.</h1>
+      <p class="hero-sub">Luxury medical spa treatments delivered to you across the GTA. Science-backed beauty, personalized for you.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="navigate('services')"><span>Explore Services</span></button>
+        <button class="btn-ghost" onclick="navigate('booking')">Book a Consultation</button>
+      </div>
+    </div>
+    <div class="hero-float-card">
+      <div class="glass-card">
+        <div class="gc-icon">✨</div>
+        <div class="gc-title">Signature Treatments</div>
+        <div class="gc-text">Botox · PRP · Chemical Peels · IV Therapy · Hair Restoration</div>
+        <div class="gc-stats">
+          <div class="gc-stat"><span class="gc-num">500+</span><span class="gc-label">Clients</span></div>
+          <div class="gc-stat"><span class="gc-num">5★</span><span class="gc-label">Rating</span></div>
+          <div class="gc-stat"><span class="gc-num">GTA</span><span class="gc-label">Mobile</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator"><div class="scroll-line"></div>Scroll</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="mtrack"></div>
+  </div>
+
+  <!-- ABOUT PREVIEW -->
+  <section class="section" style="background:var(--cream)">
+    <div class="section-inner about-grid">
+      <div class="about-visual reveal">
+        <div class="about-main-img"><p>RD Harmony</p></div>
+        <div class="about-accent"><div class="num">5+</div><p>Years of<br/>Excellence</p></div>
+        <div class="spin-badge">Certified<br/>Medical<br/>Spa</div>
+      </div>
+      <div class="about-text">
+        <div class="section-label reveal">About Us</div>
+        <h2 class="section-title reveal reveal-d1">Where <em>Science Meets</em><br/>Serenity</h2>
+        <p class="reveal reveal-d2">RD Harmony Med Spa is a premium mobile medical spa serving Oakville and the Greater Toronto Area. We bring luxury aesthetic treatments directly to you — personalized, precise, and performed with the highest standards of care.</p>
+        <p class="reveal reveal-d2">Our certified medical professionals combine evidence-based techniques with a deep commitment to your natural beauty.</p>
+        <div class="feat-grid reveal reveal-d3">
+          <div class="feat-chip">✓ Licensed Professionals</div>
+          <div class="feat-chip">✓ Mobile Services GTA</div>
+          <div class="feat-chip">✓ Health Canada Approved</div>
+          <div class="feat-chip">✓ Personalized Plans</div>
+        </div>
+        <button class="btn-primary" style="margin-top:16px" onclick="navigate('about')"><span>Learn More</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES PREVIEW -->
+  <section class="section services-dark">
+    <div class="services-bg-glow"></div>
+    <div class="section-inner">
+      <div class="section-label reveal">What We Offer</div>
+      <h2 class="section-title reveal reveal-d1">Signature <em>Treatments</em></h2>
+      <div class="services-grid" id="home-services"></div>
+      <div style="margin-top:40px;text-align:center">
+        <button class="btn-primary" onclick="navigate('services')"><span>View All Services</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-item" data-n="01"><span class="info-icon">🎯</span><h4>Personalized</h4><p>Every treatment plan crafted for your unique skin type and aesthetic goals.</p></div>
+    <div class="info-item" data-n="02"><span class="info-icon">🛡️</span><h4>Safety First</h4><p>All procedures follow Health Canada guidelines. Fully licensed and insured.</p></div>
+    <div class="info-item" data-n="03"><span class="info-icon">🔬</span><h4>Science-Backed</h4><p>Clinically proven treatments with evidence-based protocols for reliable results.</p></div>
+    <div class="info-item" data-n="04"><span class="info-icon">⭐</span><h4>5-Star Care</h4><p>Hundreds of satisfied clients across Oakville and the Greater Toronto Area.</p></div>
+  </div>
+
+  <!-- TESTIMONIALS PREVIEW -->
+  <section class="section" style="background:var(--cream)">
+    <div class="section-inner">
+      <div class="reviews-header">
+        <div>
+          <div class="section-label reveal">Client Love</div>
+          <h2 class="section-title reveal reveal-d1">What Our <em>Clients Say</em></h2>
+        </div>
+        <div class="rating-card reveal"><span class="rating-big">5.0</span><div class="rating-stars">★★★★★</div><div class="rating-label">Google Rating</div></div>
+      </div>
+      <div class="reviews-grid" id="home-reviews"></div>
+      <div style="margin-top:36px;text-align:center">
+        <button class="btn-primary" onclick="navigate('testimonials')"><span>All Reviews</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title reveal">Ready to <em>Transform</em><br/>Your Skin?</h2>
+    <p class="cta-sub reveal reveal-d1">Book your personalized consultation today. We come to you — anywhere in Oakville and the GTA.</p>
+    <div class="cta-btns reveal reveal-d2">
+      <button class="btn-white" onclick="navigate('booking')">Book a Consultation</button>
+      <button class="btn-outline-white" onclick="navigate('services')">View All Services</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h2>RD Harmony</h2>
+        <p>Premium mobile medical spa treatments across Oakville and the Greater Toronto Area. Certified professionals. Science-backed results.</p>
+        <div class="footer-socials">
+          <a class="soc-btn" href="#" title="Instagram">IG</a>
+          <a class="soc-btn" href="#" title="Facebook">FB</a>
+          <a class="soc-btn" href="#" title="Email">✉</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#" onclick="navigate('services')">Botox & Dysport</a>
+        <a href="#" onclick="navigate('services')">PRP Therapy</a>
+        <a href="#" onclick="navigate('services')">Chemical Peels</a>
+        <a href="#" onclick="navigate('iv')">IV Iron Infusion</a>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#" onclick="navigate('home')">Home</a>
+        <a href="#" onclick="navigate('about')">About Us</a>
+        <a href="#" onclick="navigate('treatments')">Treatments</a>
+        <a href="#" onclick="navigate('testimonials')">Testimonials</a>
+        <a href="#" onclick="navigate('contact')">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <p>Oakville, Ontario</p>
+        <p>Greater Toronto Area</p>
+        <p>Mobile Services Available</p>
+        <a href="#" onclick="navigate('booking')" style="color:var(--sage-light);margin-top:10px">Book Now →</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 RD Harmony Med Spa · All Rights Reserved</p>
+      <a href="https://rdharmonymedspa.com" target="_blank">rdharmonymedspa.com</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: ABOUT
+══════════════════════════════════ -->
+<div class="page" id="page-about" style="padding-top:80px">
+  <section class="section">
+    <div class="section-inner about-grid">
+      <div class="about-visual reveal">
+        <div class="about-main-img"><p>RD Harmony</p></div>
+        <div class="about-accent"><div class="num">5+</div><p>Years of<br/>Excellence</p></div>
+        <div class="spin-badge">Certified<br/>Medical<br/>Spa</div>
+      </div>
+      <div class="about-text">
+        <div class="section-label reveal">Our Story</div>
+        <h1 class="section-title reveal reveal-d1">Redefining <em>Wellness</em><br/>in Oakville</h1>
+        <p class="reveal reveal-d2">Founded with a vision to make luxury medical aesthetics accessible and convenient, RD Harmony Med Spa has been serving the Greater Toronto Area with exceptional care. Our mobile model means you never have to leave the comfort of your home to look and feel your best.</p>
+        <p class="reveal reveal-d2">Every treatment is performed by our certified team of medical professionals who bring clinic-grade results directly to your doorstep. From initial consultation to follow-up care, we walk alongside you on your wellness journey.</p>
+        <p class="reveal reveal-d3">We believe beauty treatments should feel luxurious, not clinical. That's why we've reimagined the spa experience — combining evidence-based medicine with the warmth and personalization of a boutique service.</p>
+        <div class="feat-grid reveal reveal-d3">
+          <div class="feat-chip">✓ Licensed Professionals</div>
+          <div class="feat-chip">✓ Mobile Services GTA</div>
+          <div class="feat-chip">✓ Health Canada Approved</div>
+          <div class="feat-chip">✓ Personalized Plans</div>
+          <div class="feat-chip">✓ Premium Products Only</div>
+          <div class="feat-chip">✓ Post-Treatment Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="background:var(--ivory);padding-top:60px;padding-bottom:60px">
+    <div class="section-inner">
+      <div class="section-label reveal">Our Values</div>
+      <h2 class="section-title reveal reveal-d1">What Drives <em>Everything We Do</em></h2>
+      <div class="iv-grid" style="margin-top:40px">
+        <div class="iv-card reveal reveal-d1"><div class="iv-icon">🌱</div><h3>Natural Results</h3><p>We enhance your natural beauty — never override it. Every treatment is calibrated to look and feel genuinely you.</p></div>
+        <div class="iv-card reveal reveal-d2"><div class="iv-icon">🔬</div><h3>Scientific Precision</h3><p>Every procedure follows evidence-based protocols. We stay ahead of the science so you get the best outcomes.</p></div>
+        <div class="iv-card reveal reveal-d3"><div class="iv-icon">🤝</div><h3>Client Partnership</h3><p>Your goals lead the way. We listen deeply, advise honestly, and design a plan that truly fits your life.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section"><h2 class="cta-title">Ready to <em>Begin?</em></h2><p class="cta-sub">Book your free consultation today.</p><div class="cta-btns"><button class="btn-white" onclick="navigate('booking')">Book Now</button><button class="btn-outline-white" onclick="navigate('contact')">Get in Touch</button></div></section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: SERVICES
+══════════════════════════════════ -->
+<div class="page" id="page-services" style="padding-top:80px">
+  <section class="section services-dark" style="padding-top:100px">
+    <div class="services-bg-glow"></div>
+    <div class="section-inner">
+      <div class="section-label reveal">All Services</div>
+      <h1 class="section-title reveal reveal-d1">Our <em>Full Menu</em><br/>of Treatments</h1>
+      <p class="section-desc reveal reveal-d2">From non-surgical aesthetics to restorative therapies — every treatment is delivered by our certified team, right to your door.</p>
+      <div class="services-grid" id="all-services" style="margin-top:50px"></div>
+    </div>
+  </section>
+  <section class="cta-section"><h2 class="cta-title">Not Sure Where <em>to Start?</em></h2><p class="cta-sub">Book a free consultation and let our experts recommend the perfect treatment for your goals.</p><div class="cta-btns"><button class="btn-white" onclick="navigate('booking')">Book Free Consultation</button></div></section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: TREATMENTS
+══════════════════════════════════ -->
+<div class="page" id="page-treatments" style="padding-top:100px">
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label reveal">Treatment Details</div>
+      <h1 class="section-title reveal reveal-d1">In-Depth <em>Treatment</em><br/>Information</h1>
+      <p class="section-desc reveal reveal-d2">Everything you need to know before, during, and after your treatment.</p>
+      <div class="treatment-tabs reveal reveal-d3" id="treatment-tabs"></div>
+      <div id="treatment-panels"></div>
+    </div>
+  </section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: IV THERAPY
+══════════════════════════════════ -->
+<div class="page" id="page-iv">
+  <div class="iv-hero">
+    <div class="iv-hero-content">
+      <div class="eyebrow" style="color:var(--gold)">Advanced Wellness</div>
+      <h1><em>IV Iron Infusion</em><br/>Therapy</h1>
+      <p>Replenish critical iron stores directly through intravenous therapy. Faster absorption, lasting results, administered by our licensed medical professionals in the comfort of your home.</p>
+      <button class="btn-primary" onclick="navigate('booking')"><span>Book IV Therapy</span></button>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label reveal">Why IV Therapy?</div>
+      <h2 class="section-title reveal reveal-d1">The Benefits of <em>IV Iron Infusion</em></h2>
+      <div class="iv-grid">
+        <div class="iv-card reveal reveal-d1"><div class="iv-icon">⚡</div><h3>Fast Acting</h3><p>Intravenous delivery bypasses the digestive system, providing significantly faster iron absorption than oral supplements.</p><span class="iv-price">From $180 <small>per session</small></span></div>
+        <div class="iv-card reveal reveal-d2"><div class="iv-icon">🧬</div><h3>Medical Grade</h3><p>Hospital-quality iron formulations administered using sterile technique by our licensed registered nurses and practitioners.</p><span class="iv-price">From $180 <small>per session</small></span></div>
+        <div class="iv-card reveal reveal-d3"><div class="iv-icon">🏠</div><h3>At-Home Comfort</h3><p>No hospital waiting rooms. Receive your infusion in the comfort of your own home, office, or preferred location.</p><span class="iv-price">From $180 <small>per session</small></span></div>
+        <div class="iv-card reveal reveal-d1"><div class="iv-icon">📊</div><h3>Lab Monitored</h3><p>We review your blood work and iron studies to create a treatment plan precisely calibrated to your needs.</p></div>
+        <div class="iv-card reveal reveal-d2"><div class="iv-icon">💊</div><h3>No Side Effects</h3><p>Unlike oral iron which causes GI discomfort, IV infusions bypass the gut entirely — no constipation or upset stomach.</p></div>
+        <div class="iv-card reveal reveal-d3"><div class="iv-icon">🔄</div><h3>Maintenance Plans</h3><p>Customized maintenance schedules to keep your iron levels optimal and energy high, year-round.</p></div>
+      </div>
+      <div style="margin-top:56px;background:var(--mist);border-radius:var(--r);padding:40px;border-left:4px solid var(--sage)">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:12px">Who Is IV Iron Therapy For?</h3>
+        <p style="font-size:14px;color:var(--mid);line-height:1.85;font-weight:300">IV iron infusion therapy is ideal for individuals with diagnosed iron deficiency anaemia, those who cannot tolerate oral iron, patients with inflammatory bowel disease, pregnant women with severe iron deficiency, and anyone seeking faster iron repletion than oral supplements can provide. A physician referral or recent bloodwork is recommended before your first session.</p>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section"><h2 class="cta-title">Reclaim Your <em>Energy</em></h2><p class="cta-sub">Book your IV iron infusion therapy today. We'll come to you.</p><div class="cta-btns"><button class="btn-white" onclick="navigate('booking')">Book IV Therapy</button><button class="btn-outline-white" onclick="navigate('contact')">Ask a Question</button></div></section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: TESTIMONIALS
+══════════════════════════════════ -->
+<div class="page" id="page-testimonials" style="padding-top:100px">
+  <section class="section">
+    <div class="section-inner">
+      <div class="reviews-header">
+        <div>
+          <div class="section-label reveal">Client Stories</div>
+          <h1 class="section-title reveal reveal-d1">Real Results,<br/><em>Real People</em></h1>
+        </div>
+        <div class="rating-card reveal"><span class="rating-big">5.0</span><div class="rating-stars">★★★★★</div><div class="rating-label">Average Rating</div></div>
+      </div>
+      <div class="reviews-grid" id="all-reviews"></div>
+
+      <!-- Leave a Review -->
+      <div class="review-form-wrap reveal" style="margin-top:52px">
+        <h3>Share Your Experience</h3>
+        <p style="font-size:14px;color:var(--mid);margin-bottom:28px;font-weight:300">Had a treatment with us? We'd love to hear your story.</p>
+        <div class="form-grid">
+          <div class="form-group"><label>Your Name *</label><input class="form-input" id="rv-name" placeholder="Jane Doe"/><span class="form-error" id="rv-name-err"></span></div>
+          <div class="form-group"><label>Treatment Received</label><input class="form-input" id="rv-treatment" placeholder="e.g. Botox, PRP..."/></div>
+          <div class="form-group full">
+            <label>Your Rating *</label>
+            <div class="star-rating-input" id="star-input">
+              <button class="star-btn" data-v="1" onclick="setRating(1)">★</button>
+              <button class="star-btn" data-v="2" onclick="setRating(2)">★</button>
+              <button class="star-btn" data-v="3" onclick="setRating(3)">★</button>
+              <button class="star-btn" data-v="4" onclick="setRating(4)">★</button>
+              <button class="star-btn" data-v="5" onclick="setRating(5)">★</button>
+            </div>
+            <span class="form-error" id="rv-rating-err"></span>
+          </div>
+          <div class="form-group full"><label>Your Review *</label><textarea class="form-textarea" id="rv-text" placeholder="Tell us about your experience..."></textarea><span class="form-error" id="rv-text-err"></span></div>
+        </div>
+        <button class="form-btn" onclick="submitReview()"><span>Submit Review</span></button>
+      </div>
+    </div>
+  </section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: BOOKING
+══════════════════════════════════ -->
+<div class="page" id="page-booking" style="padding-top:100px">
+  <div class="booking-section">
+    <div class="booking-wrap">
+      <div class="section-label reveal">Reserve Your Spot</div>
+      <h1 class="section-title reveal reveal-d1">Book Your <em>Treatment</em></h1>
+      <p style="font-size:14px;color:var(--mid);font-weight:300;margin-top:8px" class="reveal reveal-d2">Complete the form below and we'll confirm your appointment within 2 hours.</p>
+      <div id="booking-form-wrap">
+        <div class="form-grid">
+          <div class="form-group"><label>First Name *</label><input class="form-input" id="bk-fname" placeholder="Jane"/><span class="form-error" id="bk-fname-err"></span></div>
+          <div class="form-group"><label>Last Name *</label><input class="form-input" id="bk-lname" placeholder="Doe"/><span class="form-error" id="bk-lname-err"></span></div>
+          <div class="form-group"><label>Email *</label><input class="form-input" type="email" id="bk-email" placeholder="jane@email.com"/><span class="form-error" id="bk-email-err"></span></div>
+          <div class="form-group"><label>Phone *</label><input class="form-input" type="tel" id="bk-phone" placeholder="(416) 555-0100"/><span class="form-error" id="bk-phone-err"></span></div>
+          <div class="form-group full"><label>Treatment *</label><select class="form-select" id="bk-service" onchange="updateTimeSlots()"><option value="">Select a treatment...</option></select><span class="form-error" id="bk-service-err"></span></div>
+          <div class="form-group"><label>Preferred Date *</label><input class="form-input" type="date" id="bk-date" onchange="updateTimeSlots()"/><span class="form-error" id="bk-date-err"></span></div>
+          <div class="form-group full"><label>Available Times *</label><div class="time-slots" id="time-slots"><p style="color:var(--mid);font-size:13px">Select a service and date first.</p></div><span class="form-error" id="bk-time-err"></span></div>
+          <div class="form-group full"><label>Your Address (GTA/Oakville) *</label><input class="form-input" id="bk-address" placeholder="123 Main St, Oakville, ON"/><span class="form-error" id="bk-address-err"></span></div>
+          <div class="form-group full"><label>Special Requests / Medical Notes</label><textarea class="form-textarea" id="bk-notes" placeholder="Any allergies, medical conditions, or specific requests..."></textarea></div>
+          <div class="form-group full"><label style="display:flex;align-items:center;gap:10px;cursor:none"><input type="checkbox" id="bk-consent" style="cursor:none;accent-color:var(--sage)"/> I consent to RD Harmony contacting me about my appointment and agree to the cancellation policy.</label><span class="form-error" id="bk-consent-err"></span></div>
+        </div>
+        <button class="form-btn" id="bk-submit" onclick="submitBooking()"><span>Confirm Booking</span></button>
+      </div>
+      <div id="booking-success" style="display:none;text-align:center;padding:60px 0">
+        <div style="font-size:52px;margin-bottom:16px">✅</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:12px;color:var(--char)">Booking Confirmed!</h2>
+        <p style="font-size:14px;color:var(--mid);line-height:1.8;max-width:400px;margin:0 auto 28px">We've received your request and will confirm within 2 hours via email. We're looking forward to seeing you!</p>
+        <button class="btn-primary" onclick="navigate('home')"><span>Back to Home</span></button>
+      </div>
+    </div>
+  </div>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: CONTACT
+══════════════════════════════════ -->
+<div class="page" id="page-contact" style="padding-top:100px">
+  <section class="section">
+    <div class="section-inner">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-label reveal">Get in Touch</div>
+          <h1 class="section-title reveal reveal-d1">We'd Love to <em>Hear From You</em></h1>
+          <p class="reveal reveal-d2">Have questions about a treatment, want to book a consultation, or just want to learn more? Reach out and our team will get back to you within a few hours.</p>
+          <div class="contact-detail reveal reveal-d2"><div class="cd-icon">📍</div><div class="cd-text"><strong>Location</strong><span>Oakville, Ontario · Mobile across GTA</span></div></div>
+          <div class="contact-detail reveal reveal-d3"><div class="cd-icon">📞</div><div class="cd-text"><strong>Phone</strong><span>(905) 555-0182</span></div></div>
+          <div class="contact-detail reveal reveal-d3"><div class="cd-icon">✉️</div><div class="cd-text"><strong>Email</strong><span>hello@rdharmonymedspa.com</span></div></div>
+          <div class="contact-detail reveal"><div class="cd-icon">🕐</div><div class="cd-text"><strong>Hours</strong><span>Mon–Sat: 9am – 7pm · Sun: 10am – 5pm</span></div></div>
+          <div class="map-placeholder reveal">Oakville, Ontario</div>
+        </div>
+        <div>
+          <div class="section-label reveal">Send a Message</div>
+          <div class="form-grid reveal reveal-d1">
+            <div class="form-group"><label>First Name *</label><input class="form-input" id="ct-fname" placeholder="Jane"/><span class="form-error" id="ct-fname-err"></span></div>
+            <div class="form-group"><label>Last Name *</label><input class="form-input" id="ct-lname" placeholder="Doe"/><span class="form-error" id="ct-lname-err"></span></div>
+            <div class="form-group full"><label>Email *</label><input class="form-input" type="email" id="ct-email" placeholder="jane@email.com"/><span class="form-error" id="ct-email-err"></span></div>
+            <div class="form-group full"><label>Subject *</label><select class="form-select" id="ct-subject"><option value="">Select a topic...</option><option>Booking Inquiry</option><option>Treatment Question</option><option>Pricing</option><option>Cancellation</option><option>General Inquiry</option></select><span class="form-error" id="ct-subject-err"></span></div>
+            <div class="form-group full"><label>Message *</label><textarea class="form-textarea" id="ct-msg" placeholder="How can we help you?" style="min-height:150px"></textarea><span class="form-error" id="ct-msg-err"></span></div>
+          </div>
+          <button class="form-btn reveal reveal-d2" onclick="submitContact()"><span>Send Message</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer style="background:#0b160d;padding:40px 80px;color:rgba(255,255,255,.4);font-size:12px;display:flex;justify-content:space-between;align-items:center"><span>© 2026 RD Harmony Med Spa</span><a href="#" onclick="navigate('home')" style="color:var(--sage-light)">← Back to Home</a></footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE: ADMIN
+══════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <!-- Admin Login -->
+  <div id="admin-login" class="admin-login">
+    <div class="admin-login-box">
+      <h2>Admin Portal</h2>
+      <p>RD Harmony Med Spa · Staff Access</p>
+      <input class="admin-input" type="email" id="adm-email" placeholder="admin@rdharmony.com" value="admin@rdharmony.com"/>
+      <input class="admin-input" type="password" id="adm-pw" placeholder="Password" value="admin123"/>
+      <div class="form-error" id="adm-err" style="margin-bottom:10px;font-size:12px"></div>
+      <button class="admin-login-btn" onclick="adminLogin()">Sign In →</button>
+      <p style="margin-top:16px;font-size:11px;color:rgba(255,255,255,.25);text-align:center">Default: admin@rdharmony.com / admin123</p>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dash" style="display:none">
+    <div class="admin-sidebar">
+      <div class="admin-logo"><h2>RD Harmony</h2><p>Admin Portal</p></div>
+      <div class="admin-nav">
+        <button class="admin-nav-item active" onclick="showAdminTab('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+        <button class="admin-nav-item" onclick="showAdminTab('bookings',this)"><span class="nav-icon">📅</span> Bookings</button>
+        <button class="admin-nav-item" onclick="showAdminTab('clients',this)"><span class="nav-icon">👥</span> Clients</button>
+        <button class="admin-nav-item" onclick="showAdminTab('messages',this)"><span class="nav-icon">✉️</span> Messages</button>
+        <button class="admin-nav-item" onclick="showAdminTab('reviews',this)"><span class="nav-icon">⭐</span> Reviews</button>
+        <button class="admin-nav-item" onclick="showAdminTab('services',this)"><span class="nav-icon">💆</span> Services</button>
+      </div>
+      <div style="padding:20px 14px;margin-top:auto;border-top:1px solid rgba(255,255,255,.06)">
+        <button class="admin-nav-item" onclick="adminLogout()"><span class="nav-icon">🚪</span> Sign Out</button>
+        <button class="admin-nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span> View Site</button>
+      </div>
+    </div>
+    <div class="admin-main">
+      <div id="tab-dashboard">
+        <div class="admin-header"><div><h1>Dashboard</h1><p id="dash-date"></p></div><button class="admin-login-btn" style="width:auto;padding:10px 24px;font-size:10px" onclick="navigate('booking')">+ New Booking</button></div>
+        <div class="admin-grid" id="admin-stats"></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Recent Bookings</h3><input class="admin-search" placeholder="Search..." oninput="filterTable(this,'recent-bk-tbody')"/></div>
+          <table><thead><tr><th>Client</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="recent-bk-tbody"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-bookings" style="display:none">
+        <div class="admin-header"><div><h1>All Bookings</h1><p>Manage appointments</p></div><button class="admin-login-btn" style="width:auto;padding:10px 24px;font-size:10px" onclick="exportCSV()">Export CSV</button></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Appointments</h3><input class="admin-search" placeholder="Search bookings..." oninput="filterTable(this,'all-bk-tbody')"/></div>
+          <table><thead><tr><th>ID</th><th>Client</th><th>Email</th><th>Service</th><th>Date</th><th>Time</th><th>Address</th><th>Status</th><th>Action</th></tr></thead><tbody id="all-bk-tbody"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-clients" style="display:none">
+        <div class="admin-header"><h1>Clients</h1></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Client Directory</h3><input class="admin-search" placeholder="Search clients..." oninput="filterTable(this,'clients-tbody')"/></div>
+          <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Bookings</th><th>Last Visit</th></tr></thead><tbody id="clients-tbody"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-messages" style="display:none">
+        <div class="admin-header"><h1>Messages</h1></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Contact Enquiries</h3></div>
+          <table><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th></tr></thead><tbody id="messages-tbody"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-reviews" style="display:none">
+        <div class="admin-header"><h1>Reviews</h1></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Client Reviews</h3></div>
+          <table><thead><tr><th>Name</th><th>Rating</th><th>Treatment</th><th>Review</th><th>Date</th><th>Action</th></tr></thead><tbody id="admin-reviews-tbody"></tbody></table>
+        </div>
+      </div>
+      <div id="tab-services" style="display:none">
+        <div class="admin-header"><h1>Services</h1></div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Service Menu</h3></div>
+          <table><thead><tr><th>Service</th><th>Category</th><th>Duration</th><th>Price</th></tr></thead><tbody id="services-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOOKING CONFIRMATION MODAL ══ -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Confirm Booking</h3><button class="modal-close" onclick="closeModal('confirm-modal')">×</button></div>
+    <div class="modal-body" id="confirm-modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATABASE (IndexedDB + localStorage)
+═══════════════════════════════════════ */
+const DB = {
+  get(key,def=[]){try{return JSON.parse(localStorage.getItem('rdh_'+key))||def}catch{return def}},
+  set(key,val){localStorage.setItem('rdh_'+key,JSON.stringify(val))},
+  push(key,item){const d=DB.get(key);d.push(item);DB.set(key,d);return item}
+};
+
+/* ═══ DATA ═══ */
+const SERVICES = [
+  {id:'botox',name:'Botox & Dysport',icon:'💉',cat:'Injectables',desc:'Smooth fine lines and restore youthful expression with precision-administered neuromodulators. Natural results, every time.',price:'From $9/unit',duration:'30–60 min',popular:true,
+   details:'Botox and Dysport are neurotoxins that temporarily relax targeted facial muscles, smoothing wrinkles and preventing new lines from forming. Common areas include forehead, crow\'s feet, frown lines, brow lift, and lip flip.',
+   bullets:['Results last 3–6 months','No downtime required','Natural-looking results','Preventive anti-aging benefits','Same-day return to activities']},
+  {id:'prp-face',name:'PRP — Face',icon:'✨',cat:'PRP Therapy',desc:'Platelet-Rich Plasma facial rejuvenation. Harness your body\'s own healing power for remarkable skin renewal and radiance.',price:'From $450',duration:'60–90 min',
+   details:'PRP facial treatments use your own platelet-rich plasma to stimulate collagen production, improve skin texture, reduce fine lines, and restore a youthful glow. Often combined with microneedling for enhanced results.',
+   bullets:['Uses your own blood — 100% natural','Stimulates collagen & elastin','Improves texture and tone','Minimal downtime','Long-lasting results 6–12+ months']},
+  {id:'prp-hair',name:'PRP — Hair Restoration',icon:'🌱',cat:'PRP Therapy',desc:'PRP scalp injections to stimulate dormant hair follicles, reduce shedding, and promote natural hair regrowth.',price:'From $550',duration:'60–90 min',
+   details:'PRP hair restoration involves injecting platelet-rich plasma directly into the scalp to awaken dormant follicles, increase hair count, and strengthen existing strands. Most effective for androgenic alopecia and early hair loss.',
+   bullets:['Clinically proven for hair loss','No surgery required','Stimulates new hair growth','Reduces shedding','Series of 3–4 treatments recommended']},
+  {id:'chemical-peel',name:'Chemical Peels',icon:'🧴',cat:'Skin Treatments',desc:'Customized chemical exfoliation addressing pigmentation, texture, acne, and aging with clinical-grade precision.',price:'From $180',duration:'30–45 min',
+   details:'Medical-grade chemical peels remove damaged outer layers of skin to reveal fresher, more even-toned skin beneath. We offer a range of peels from light to deep depending on your skin concerns and tolerance.',
+   bullets:['Treats hyperpigmentation','Reduces acne and scarring','Improves skin texture','Stimulates cell turnover','Customized to your skin type']},
+  {id:'microneedling',name:'Microneedling',icon:'⚡',cat:'Skin Treatments',desc:'Precision micro-injuries stimulate collagen production for firmer, smoother, more youthful skin.',price:'From $350',duration:'60 min',
+   details:'Microneedling creates controlled micro-channels in the skin to trigger the body\'s natural healing response, boosting collagen and elastin production. Can be combined with PRP for maximum results.',
+   bullets:['Reduces fine lines and wrinkles','Improves acne scarring','Tightens and firms skin','Minimal downtime','Safe for most skin types']},
+  {id:'iv-therapy',name:'IV Iron Infusion',icon:'💧',cat:'IV Therapy',desc:'Replenish iron stores intravenously. Faster than oral supplements, administered by our licensed medical professionals.',price:'From $180',duration:'45–60 min',
+   details:'IV iron infusion delivers iron directly into the bloodstream, bypassing digestive absorption issues. Ideal for patients with diagnosed iron deficiency anaemia who cannot tolerate oral supplements.',
+   bullets:['Instant bioavailability','No GI side effects','Physician-supervised','Lab review included','Maintenance plans available']}
+];
+
+const REVIEWS_DEFAULT = [
+  {id:1,name:'Sarah M.',avatar:'S',treatment:'Botox & PRP',rating:5,text:'Absolutely incredible experience. The team came to my home and the results were better than any clinic I\'ve visited. My skin has never looked this radiant.',date:'2026-02-14',approved:true},
+  {id:2,name:'Jennifer K.',avatar:'J',treatment:'Regular Client',rating:5,text:'The mobile service is a game changer. Professional, discreet, and the results speak for themselves. I\'ve been a client for over a year and couldn\'t be happier.',date:'2026-01-28',approved:true},
+  {id:3,name:'Amira R.',avatar:'A',treatment:'IV Therapy',rating:5,text:'After my IV iron infusion therapy, I felt like a completely different person. Knowledgeable, compassionate, and made me feel completely at ease.',date:'2026-03-01',approved:true},
+  {id:4,name:'Priya T.',avatar:'P',treatment:'Chemical Peel',rating:5,text:'I\'ve tried many spas but RD Harmony is on another level. The chemical peel was perfect — no harsh reaction, beautiful glow for weeks after.',date:'2026-02-20',approved:true},
+  {id:5,name:'Lisa N.',avatar:'L',treatment:'PRP Hair',rating:5,text:'Started PRP hair treatments 4 months ago. Already seeing significant regrowth. The practitioner is incredibly skilled and caring.',date:'2026-01-10',approved:true},
+  {id:6,name:'Yasmin A.',avatar:'Y',treatment:'Microneedling',rating:5,text:'My acne scars have reduced dramatically after 3 microneedling sessions. Worth every penny. The convenience of in-home service is unmatched.',date:'2026-02-05',approved:true}
+];
+
+const BOOKINGS_DEFAULT = [
+  {id:'BK001',fname:'Sarah',lname:'Mitchell',email:'sarah@email.com',phone:'416-555-0101',service:'Botox & Dysport',date:'2026-03-15',time:'10:00 AM',address:'12 Oak Ave, Oakville',notes:'',status:'confirmed',created:'2026-03-10'},
+  {id:'BK002',fname:'Jennifer',lname:'Kim',email:'jen@email.com',phone:'905-555-0202',service:'PRP — Face',date:'2026-03-16',time:'2:00 PM',address:'45 Maple Dr, Burlington',notes:'First time',status:'confirmed',created:'2026-03-10'},
+  {id:'BK003',fname:'Amira',lname:'Rashid',email:'amira@email.com',phone:'416-555-0303',service:'IV Iron Infusion',date:'2026-03-17',time:'11:00 AM',address:'8 Lakeshore, Oakville',notes:'Lab results attached',status:'pending',created:'2026-03-11'},
+  {id:'BK004',fname:'Priya',lname:'Tiwari',email:'priya@email.com',phone:'905-555-0404',service:'Chemical Peels',date:'2026-03-18',time:'3:00 PM',address:'22 Queen St, Mississauga',notes:'',status:'confirmed',created:'2026-03-11'},
+  {id:'BK005',fname:'Marcus',lname:'Chen',email:'marcus@email.com',phone:'416-555-0505',service:'Microneedling',date:'2026-03-19',time:'1:00 PM',address:'67 Park Blvd, Oakville',notes:'',status:'cancelled',created:'2026-03-09'}
+];
+
+const MESSAGES_DEFAULT = [
+  {name:'David Park',email:'david@email.com',subject:'Pricing',message:'Hi, could you send me a full price list for Botox and PRP? Thank you.',date:'2026-03-11'},
+  {name:'Rachel Moore',email:'rachel@email.com',subject:'Booking Inquiry',message:'I\'m interested in booking a consultation for hair PRP. What\'s your earliest availability?',date:'2026-03-10'}
+];
+
+// Initialize data if not exists
+if(!localStorage.getItem('rdh_reviews'))DB.set('reviews',REVIEWS_DEFAULT);
+if(!localStorage.getItem('rdh_bookings'))DB.set('bookings',BOOKINGS_DEFAULT);
+if(!localStorage.getItem('rdh_messages'))DB.set('messages',MESSAGES_DEFAULT);
+if(!localStorage.getItem('rdh_adminAuth'))DB.set('adminAuth',false);
+
+let selectedTime='', currentRating=0;
+
+/* ═══════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════ */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+document.addEventListener('mouseover',e=>{if(e.target.matches('a,button,.svc-card,.review-card,.iv-card,.feat-chip,.time-slot,.admin-nav-item,.tab-btn'))document.body.classList.add('cursor-hover')});
+document.addEventListener('mouseout',e=>{if(e.target.matches('a,button,.svc-card,.review-card,.iv-card,.feat-chip,.time-slot,.admin-nav-item,.tab-btn'))document.body.classList.remove('cursor-hover')});
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+let currentPage='home';
+function navigate(page){
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(!el){toast('Page not found','error');return}
+  el.classList.add('active');
+  currentPage=page;
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Nav styling
+  const nav=document.getElementById('nav');
+  const darkPages=['home','services','admin'];
+  if(darkPages.includes(page)&&window.scrollY<80){nav.classList.remove('scrolled')}
+  else{nav.classList.add('scrolled')}
+
+  // Active nav links
+  document.querySelectorAll('.nav-links a').forEach(a=>{a.classList.remove('active');if(a.dataset.page===page)a.classList.add('active')});
+
+  // Page-specific init
+  if(page==='home'){initHome()}
+  if(page==='services'){initAllServices()}
+  if(page==='treatments'){initTreatments()}
+  if(page==='testimonials'){renderAllReviews();initReveal()}
+  if(page==='booking'){initBookingForm();initReveal()}
+  if(page==='admin'){checkAdminAuth()}
+  initReveal();
+}
+
+/* ═══ NAV SCROLL ═══ */
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('nav');
+  const lightPages=['about','contact','booking','treatments','testimonials','iv'];
+  if(window.scrollY>70){nav.classList.add('scrolled')}
+  else{if(lightPages.includes(currentPage))nav.classList.add('scrolled');else nav.classList.remove('scrolled')}
+});
+
+/* ═══ HAMBURGER ═══ */
+function toggleDrawer(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('nav-drawer').classList.toggle('open');
+  document.getElementById('drawer-overlay').classList.toggle('open');
+  document.body.classList.toggle('modal-open');
+}
+
+/* ═══ MODAL ═══ */
+function openModal(id){document.getElementById(id).classList.add('open');document.body.classList.add('modal-open')}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.classList.remove('modal-open')}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+function toast(msg,type='success'){
+  const tc=document.getElementById('toast-container');
+  const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;
+  tc.appendChild(t);setTimeout(()=>t.classList.add('show'),10);
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},3500);
+}
+
+/* ═══════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════ */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>obs.observe(el));
+}
+
+/* ═══════════════════════════════════════
+   HOME PAGE
+═══════════════════════════════════════ */
+function initHome(){
+  // Marquee
+  const items=['Botox & Dysport','PRP for Face & Hair','Chemical Peels','IV Iron Infusion','Microneedling','Skin Rejuvenation','Mobile Services GTA'];
+  const track=document.getElementById('mtrack');
+  if(track){track.innerHTML=[...items,...items].map(i=>`<div class="marquee-item">${i}</div>`).join('')}
+
+  // Particles
+  const pc=document.getElementById('particles');
+  if(pc&&!pc.hasChildNodes()){
+    for(let i=0;i<28;i++){
+      const p=document.createElement('div');
+      p.style.cssText=`position:absolute;width:${1+Math.random()*2.5}px;height:${1+Math.random()*2.5}px;background:var(--gold-light);border-radius:50%;opacity:0;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:partFloat ${4+Math.random()*4}s ease-in infinite;animation-delay:${Math.random()*6}s`;
+      pc.appendChild(p);
+    }
+    const s=document.createElement('style');s.textContent='@keyframes partFloat{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:.8;transform:translateY(-18px) scale(1)}80%{opacity:.3}100%{opacity:0;transform:translateY(-100px) scale(.4)}}';
+    document.head.appendChild(s);
+  }
+
+  // Services preview (first 6)
+  const container=document.getElementById('home-services');
+  if(container){container.innerHTML=SERVICES.slice(0,6).map(s=>renderServiceCard(s)).join('')}
+
+  // Reviews preview (first 3)
+  const rv=document.getElementById('home-reviews');
+  const reviews=DB.get('reviews').filter(r=>r.approved).slice(0,3);
+  if(rv){rv.innerHTML=reviews.map(r=>renderReviewCard(r)).join('')}
+
+  // Float card 3D
+  const card=document.querySelector('.hero-float-card');
+  if(card){document.addEventListener('mousemove',e=>{const dx=(e.clientX-window.innerWidth/2)/(window.innerWidth/2);const dy=(e.clientY-window.innerHeight/2)/(window.innerHeight/2);card.style.transform=`translateY(-50%) rotateY(${dx*10}deg) rotateX(${-dy*6}deg)`})}
+
+  // Service card 3D tilt
+  setTimeout(()=>{document.querySelectorAll('.svc-card').forEach(c=>{
+    c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=e.clientX-r.left-r.width/2;const y=e.clientY-r.top-r.height/2;c.style.transform=`translateY(-7px) rotateX(${-y*.04}deg) rotateY(${x*.04}deg)`});
+    c.addEventListener('mouseleave',()=>{c.style.transform=''});
+  })},300);
+  initReveal();
+}
+
+function renderServiceCard(s){
+  return`<div class="svc-card">
+    ${s.popular?'<div class="svc-badge">Popular</div>':''}
+    <div class="svc-icon">${s.icon}</div>
+    <h3>${s.name}</h3>
+    <p>${s.desc}</p>
+    <span class="svc-price">${s.price} <small>· ${s.duration}</small></span>
+    <a href="#" class="svc-link" onclick="navigate('booking');return false">Book Now</a>
+  </div>`
+}
+
+function renderReviewCard(r){
+  return`<div class="review-card">
+    <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+    <p>"${r.text}"</p>
+    <div class="review-author">
+      <div class="author-av">${r.avatar}</div>
+      <div><div class="author-name">${r.name}</div><div class="author-tag">${r.treatment}</div></div>
+    </div>
+  </div>`
+}
+
+/* ═══════════════════════════════════════
+   SERVICES PAGE
+═══════════════════════════════════════ */
+function initAllServices(){
+  const c=document.getElementById('all-services');
+  if(c){
+    c.innerHTML=SERVICES.map(s=>renderServiceCard(s)).join('');
+    setTimeout(()=>{document.querySelectorAll('.svc-card').forEach(card=>{
+      card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();const x=e.clientX-r.left-r.width/2;const y=e.clientY-r.top-r.height/2;card.style.transform=`translateY(-7px) rotateX(${-y*.04}deg) rotateY(${x*.04}deg)`});
+      card.addEventListener('mouseleave',()=>{card.style.transform=''});
+    })},100);
+  }
+}
+
+/* ═══════════════════════════════════════
+   TREATMENTS PAGE
+═══════════════════════════════════════ */
+function initTreatments(){
+  const tabs=document.getElementById('treatment-tabs');
+  const panels=document.getElementById('treatment-panels');
+  if(!tabs||!panels)return;
+  tabs.innerHTML=SERVICES.map((s,i)=>`<button class="tab-btn${i===0?' active':''}" onclick="switchTreatmentTab(${i},this)">${s.name}</button>`).join('');
+  panels.innerHTML=SERVICES.map((s,i)=>`<div class="treatment-content${i===0?' active':''}" id="tc-${i}">
+    <div class="treatment-card-lg">
+      <div class="tc-header">
+        <div class="tc-icon-title"><div class="tc-icon">${s.icon}</div><div class="tc-title-wrap"><h3>${s.name}</h3><p>${s.cat} · ${s.duration}</p></div></div>
+        <div class="tc-price-tag">${s.price}<small>per session</small></div>
+      </div>
+      <div class="tc-body">
+        <p>${s.details}</p>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin:20px 0 12px">Key Benefits</h4>
+        <div class="tc-bullets">${s.bullets.map(b=>`<div class="tc-bullet">${b}</div>`).join('')}</div>
+      </div>
+      <div class="tc-footer">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">${[s.cat,'Mobile Service','GTA/Oakville'].map(t=>`<span class="tc-tag">${t}</span>`).join('')}</div>
+        <button class="book-this-btn" onclick="navigate('booking')">Book ${s.name} →</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function switchTreatmentTab(i,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.treatment-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tc-'+i).classList.add('active');
+}
+
+/* ═══════════════════════════════════════
+   TESTIMONIALS PAGE
+═══════════════════════════════════════ */
+function renderAllReviews(){
+  const c=document.getElementById('all-reviews');
+  const reviews=DB.get('reviews').filter(r=>r.approved);
+  if(c)c.innerHTML=reviews.map(r=>renderReviewCard(r)).join('');
+}
+
+let currentRatingVal=0;
+function setRating(v){
+  currentRatingVal=v;
+  document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('lit',i<v));
+}
+
+function submitReview(){
+  const name=document.getElementById('rv-name').value.trim();
+  const treatment=document.getElementById('rv-treatment').value.trim();
+  const text=document.getElementById('rv-text').value.trim();
+  let valid=true;
+
+  document.getElementById('rv-name-err').textContent='';
+  document.getElementById('rv-rating-err').textContent='';
+  document.getElementById('rv-text-err').textContent='';
+
+  if(!name){document.getElementById('rv-name-err').textContent='Name is required';valid=false}
+  if(!currentRatingVal){document.getElementById('rv-rating-err').textContent='Please select a rating';valid=false}
+  if(text.length<20){document.getElementById('rv-text-err').textContent='Please write at least 20 characters';valid=false}
+  if(!valid)return;
+
+  const review={id:Date.now(),name,avatar:name[0].toUpperCase(),treatment:treatment||'RD Harmony Client',rating:currentRatingVal,text,date:new Date().toISOString().split('T')[0],approved:true};
+  DB.push('reviews',review);
+  renderAllReviews();
+  document.getElementById('rv-name').value='';
+  document.getElementById('rv-treatment').value='';
+  document.getElementById('rv-text').value='';
+  setRating(0);
+  currentRatingVal=0;
+  toast('Thank you for your review! 🌟');
+}
+
+/* ═══════════════════════════════════════
+   BOOKING FORM
+═══════════════════════════════════════ */
+function initBookingForm(){
+  // Set min date to today
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('bk-date').min=today;
+
+  // Populate services dropdown
+  const sel=document.getElementById('bk-service');
+  sel.innerHTML='<option value="">Select a treatment...</option>'+SERVICES.map(s=>`<option value="${s.name}">${s.name} — ${s.price}</option>`).join('');
+
+  // Reset
+  document.getElementById('booking-form-wrap').style.display='block';
+  document.getElementById('booking-success').style.display='none';
+  selectedTime='';
+}
+
+function updateTimeSlots(){
+  const svc=document.getElementById('bk-service').value;
+  const date=document.getElementById('bk-date').value;
+  const container=document.getElementById('time-slots');
+
+  if(!svc||!date){container.innerHTML='<p style="color:var(--mid);font-size:13px">Select a service and date first.</p>';return}
+
+  // Get booked slots for this date
+  const bookings=DB.get('bookings');
+  const booked=bookings.filter(b=>b.date===date&&b.status!=='cancelled').map(b=>b.time);
+
+  const slots=['9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM'];
+  container.innerHTML=slots.map(s=>{
+    const taken=booked.includes(s);
+    return`<button class="time-slot${taken?' taken':''}" onclick="selectTime('${s}',this)" ${taken?'disabled':''}>${s}${taken?' ✗':''}</button>`;
+  }).join('');
+  selectedTime='';
+}
+
+function selectTime(t,btn){
+  selectedTime=t;
+  document.querySelectorAll('.time-slot').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function submitBooking(){
+  // Validation
+  const fields=[
+    {id:'bk-fname',errId:'bk-fname-err',msg:'First name required'},
+    {id:'bk-lname',errId:'bk-lname-err',msg:'Last name required'},
+    {id:'bk-email',errId:'bk-email-err',msg:'Valid email required',regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/},
+    {id:'bk-phone',errId:'bk-phone-err',msg:'Phone number required'},
+    {id:'bk-address',errId:'bk-address-err',msg:'Address required'}
+  ];
+  let valid=true;
+  fields.forEach(f=>{
+    const el=document.getElementById(f.id);const err=document.getElementById(f.errId);
+    err.textContent='';
+    if(!el.value.trim()||(f.regex&&!f.regex.test(el.value))){err.textContent=f.msg;valid=false;el.classList.add('error')}
+    else{el.classList.remove('error')}
+  });
+
+  const svcEl=document.getElementById('bk-service');
+  const svcErr=document.getElementById('bk-service-err');
+  svcErr.textContent='';
+  if(!svcEl.value){svcErr.textContent='Please select a treatment';valid=false}
+
+  const dateEl=document.getElementById('bk-date');
+  const dateErr=document.getElementById('bk-date-err');
+  dateErr.textContent='';
+  if(!dateEl.value){dateErr.textContent='Please select a date';valid=false}
+
+  const timeErr=document.getElementById('bk-time-err');
+  timeErr.textContent='';
+  if(!selectedTime){timeErr.textContent='Please select a time slot';valid=false}
+
+  const consentEl=document.getElementById('bk-consent');
+  const consentErr=document.getElementById('bk-consent-err');
+  consentErr.textContent='';
+  if(!consentEl.checked){consentErr.textContent='Please accept the terms to continue';valid=false}
+
+  if(!valid)return;
+
+  const booking={
+    id:'BK'+String(DB.get('bookings').length+1).padStart(3,'0'),
+    fname:document.getElementById('bk-fname').value.trim(),
+    lname:document.getElementById('bk-lname').value.trim(),
+    email:document.getElementById('bk-email').value.trim(),
+    phone:document.getElementById('bk-phone').value.trim(),
+    service:svcEl.value,
+    date:dateEl.value,
+    time:selectedTime,
+    address:document.getElementById('bk-address').value.trim(),
+    notes:document.getElementById('bk-notes').value.trim(),
+    status:'pending',
+    created:new Date().toISOString().split('T')[0]
+  };
+  DB.push('bookings',booking);
+  document.getElementById('booking-form-wrap').style.display='none';
+  document.getElementById('booking-success').style.display='block';
+  toast('Booking confirmed! We\'ll reach out within 2 hours. ✅');
+}
+
+/* ═══════════════════════════════════════
+   CONTACT FORM
+═══════════════════════════════════════ */
+function submitContact(){
+  const fields=[
+    {id:'ct-fname',errId:'ct-fname-err',msg:'First name required'},
+    {id:'ct-lname',errId:'ct-lname-err',msg:'Last name required'},
+    {id:'ct-email',errId:'ct-email-err',msg:'Valid email required',regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/},
+    {id:'ct-msg',errId:'ct-msg-err',msg:'Please write a message (min 10 chars)',minLen:10}
+  ];
+  let valid=true;
+  fields.forEach(f=>{
+    const el=document.getElementById(f.id);const err=document.getElementById(f.errId);
+    err.textContent='';
+    if(!el.value.trim()||(f.regex&&!f.regex.test(el.value))||(f.minLen&&el.value.trim().length<f.minLen)){err.textContent=f.msg;valid=false;el.classList.add('error')}
+    else el.classList.remove('error');
+  });
+  const subj=document.getElementById('ct-subject');
+  const subjErr=document.getElementById('ct-subject-err');
+  subjErr.textContent='';
+  if(!subj.value){subjErr.textContent='Please select a topic';valid=false}
+  if(!valid)return;
+
+  const msg={
+    name:document.getElementById('ct-fname').value+' '+document.getElementById('ct-lname').value,
+    email:document.getElementById('ct-email').value,
+    subject:subj.value,
+    message:document.getElementById('ct-msg').value,
+    date:new Date().toISOString().split('T')[0]
+  };
+  DB.push('messages',msg);
+  toast('Message sent! We\'ll reply within a few hours. ✉️');
+  ['ct-fname','ct-lname','ct-email','ct-msg'].forEach(id=>{document.getElementById(id).value=''});
+  subj.value='';
+}
+
+/* ═══════════════════════════════════════
+   ADMIN
+═══════════════════════════════════════ */
+const ADMIN_CREDS={email:'admin@rdharmony.com',password:'admin123'};
+
+function adminLogin(){
+  const email=document.getElementById('adm-email').value;
+  const pw=document.getElementById('adm-pw').value;
+  const err=document.getElementById('adm-err');
+  if(email===ADMIN_CREDS.email&&pw===ADMIN_CREDS.password){
+    DB.set('adminAuth',true);
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-dash').style.display='block';
+    loadAdminDashboard();
+    toast('Welcome back, Admin! 👋');
+  }else{
+    err.textContent='Invalid credentials. Try admin@rdharmony.com / admin123';
+  }
+}
+
+function adminLogout(){
+  DB.set('adminAuth',false);
+  document.getElementById('admin-login').style.display='flex';
+  document.getElementById('admin-dash').style.display='none';
+}
+
+function checkAdminAuth(){
+  if(DB.get('adminAuth')){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-dash').style.display='block';
+    loadAdminDashboard();
+  }else{
+    document.getElementById('admin-login').style.display='flex';
+    document.getElementById('admin-dash').style.display='none';
+  }
+}
+
+function loadAdminDashboard(){
+  // Date
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  const bookings=DB.get('bookings');
+  const messages=DB.get('messages');
+  const reviews=DB.get('reviews');
+
+  // Stats
+  const stats=[
+    {val:bookings.filter(b=>b.status!=='cancelled').length,lbl:'Total Bookings',ch:'+3 this week'},
+    {val:bookings.filter(b=>b.status==='pending').length,lbl:'Pending',ch:'Needs attention'},
+    {val:messages.length,lbl:'Messages',ch:messages.length>0?'Unread':'All caught up'},
+    {val:reviews.filter(r=>r.approved).length,lbl:'Reviews',ch:'⭐ 5.0 average'}
+  ];
+  document.getElementById('admin-stats').innerHTML=stats.map(s=>`<div class="admin-stat"><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.lbl}</div><div class="stat-change">${s.ch}</div></div>`).join('');
+
+  // Recent bookings
+  renderBookingsTable('recent-bk-tbody',bookings.slice(-5).reverse());
+  renderBookingsTable('all-bk-tbody',bookings.slice().reverse());
+
+  // Clients (unique by email)
+  const clientMap={};
+  bookings.forEach(b=>{
+    if(!clientMap[b.email])clientMap[b.email]={name:b.fname+' '+b.lname,email:b.email,phone:b.phone,count:0,last:b.date};
+    clientMap[b.email].count++;
+    if(b.date>clientMap[b.email].last)clientMap[b.email].last=b.date;
+  });
+  document.getElementById('clients-tbody').innerHTML=Object.values(clientMap).map(c=>`<tr><td>${c.name}</td><td>${c.email}</td><td>${c.phone}</td><td>${c.count}</td><td>${c.last}</td></tr>`).join('');
+
+  // Messages
+  document.getElementById('messages-tbody').innerHTML=messages.map(m=>`<tr><td>${m.name}</td><td>${m.email}</td><td>${m.subject}</td><td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.message}</td><td>${m.date}</td></tr>`).join('');
+
+  // Reviews admin
+  document.getElementById('admin-reviews-tbody').innerHTML=reviews.map(r=>`<tr><td>${r.name}</td><td>${'★'.repeat(r.rating)}</td><td>${r.treatment}</td><td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.text}</td><td>${r.date}</td><td><button class="admin-action-btn" onclick="deleteReview(${r.id})">Delete</button></td></tr>`).join('');
+
+  // Services
+  document.getElementById('services-tbody').innerHTML=SERVICES.map(s=>`<tr><td>${s.icon} ${s.name}</td><td>${s.cat}</td><td>${s.duration}</td><td>${s.price}</td></tr>`).join('');
+}
+
+function renderBookingsTable(tbodyId,bookings){
+  const tbody=document.getElementById(tbodyId);
+  if(!tbody)return;
+  tbody.innerHTML=bookings.map(b=>`<tr>
+    <td>${tbodyId==='all-bk-tbody'?`<span style="color:var(--sage-light);font-size:11px">${b.id}</span><br/>`:''}${b.fname} ${b.lname}</td>
+    ${tbodyId==='all-bk-tbody'?`<td style="font-size:12px">${b.email}</td>`:''}
+    <td>${b.service}</td>
+    <td>${b.date}</td>
+    <td>${b.time}</td>
+    ${tbodyId==='all-bk-tbody'?`<td style="font-size:12px;max-width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${b.address}</td>`:''}
+    <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+    <td>
+      <select style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;cursor:none" onchange="updateBookingStatus('${b.id}',this.value)">
+        <option value="pending"${b.status==='pending'?' selected':''}>Pending</option>
+        <option value="confirmed"${b.status==='confirmed'?' selected':''}>Confirmed</option>
+        <option value="cancelled"${b.status==='cancelled'?' selected':''}>Cancel</option>
+      </select>
+    </td>
+  </tr>`).join('');
+}
+
+function updateBookingStatus(id,status){
+  const bookings=DB.get('bookings');
+  const idx=bookings.findIndex(b=>b.id===id);
+  if(idx>-1){bookings[idx].status=status;DB.set('bookings',bookings);toast(`Booking ${id} → ${status}`);loadAdminDashboard()}
+}
+
+function deleteReview(id){
+  if(!confirm('Delete this review?'))return;
+  const reviews=DB.get('reviews').filter(r=>r.id!==id);
+  DB.set('reviews',reviews);
+  loadAdminDashboard();
+  toast('Review deleted','error');
+}
+
+function showAdminTab(tab,btn){
+  document.querySelectorAll('.admin-nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+tab).style.display='block';
+}
+
+function filterTable(input,tbodyId){
+  const q=input.value.toLowerCase();
+  const rows=document.querySelectorAll('#'+tbodyId+' tr');
+  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q)?'':'none'});
+}
+
+function exportCSV(){
+  const bookings=DB.get('bookings');
+  const headers=['ID','First Name','Last Name','Email','Phone','Service','Date','Time','Address','Status','Created'];
+  const rows=bookings.map(b=>[b.id,b.fname,b.lname,b.email,b.phone,b.service,b.date,b.time,`"${b.address}"`,b.status,b.created]);
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rdharmony-bookings.csv';a.click();
+  toast('Bookings exported as CSV 📊');
+}
+
+/* ═══════════════════════════════════════
+   LOADER + INIT
+═══════════════════════════════════════ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('out');
+    navigate('home');
+  },1900);
+});
+
+// Set promo banner and nav offset
+document.getElementById('nav').style.top='38px';
+</script>
+</body>
+</html>
